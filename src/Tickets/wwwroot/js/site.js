@@ -2,7 +2,14 @@
     .controller('TicketViewModel', ['$scope', '$http', function ($scope, $http) {
         $scope.pageSize = 10;
 
-        $scope.loading = false;
+        $scope.stateEnum = {
+            idle: 0,
+            loadingSuggestion: 1,
+            loadingEvents: 2,
+            loadingTickets: 3
+        };
+
+        $scope.state = $scope.stateEnum.idle;
 
         $scope.categoryId = null;
         $scope.eventId = null;
@@ -13,17 +20,18 @@
 
         $scope.tickets = new DataHandler();
 
-        function serviceCall(endpoint, params, success) {
-            $scope.loading = true;
+        function serviceCall(endpoint, params, loadState, success) {
+            $scope.state = loadState;
             return $http.get(endpoint, { params: params })
             .then(success)
-            .finally(function () { $scope.loading = false; });
+            .finally(function () { $scope.state = $scope.stateEnum.idle; });
         }
 
         $scope.getSuggestions = function (query) {
             return serviceCall(
                 'api/Search',
                 { query: query },
+                $scope.stateEnum.loadingSuggestion,
                 function (result) { return result.data; })
         };
 
@@ -33,12 +41,13 @@
                     categoryId: $scope.categoryId,
                     page: $scope.events.page
                 },
+                $scope.stateEnum.loadingEvents,
                 function (result) { $scope.events = result.data; })
         };
 
         $scope.loadTickets = function (numberOfTickets) {
             //Avoid fetching tickets when clicking 'Back to events'
-            if ($scope.tickets.totalItems === 0 && $scope.tickets.items.length)
+            if (!$scope.eventId)
                 return;
 
             return serviceCall(
@@ -47,6 +56,7 @@
                     page: $scope.tickets.page,
                     numberOfTickets: numberOfTickets
                 },
+                $scope.stateEnum.loadingTickets,
                 function (result) { $scope.tickets = result.data; })
         };
 
@@ -55,6 +65,7 @@
             $scope.tickets = new DataHandler();
 
             $scope.ticketNumberFilter = null;
+            $scope.eventId = null;
 
             $scope.categoryId = item.categoryId;
             $scope.loadEvents();

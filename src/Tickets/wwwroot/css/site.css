@@ -7,6 +7,8 @@
   display: none !important;
 }
 
+.input-group-lg .glyphicon { margin-top:6px; }
+
 .glyphicon-refresh-animate {
     -animation: spin .7s infinite linear;
     -webkit-animation: spin2 .7s infinite linear;

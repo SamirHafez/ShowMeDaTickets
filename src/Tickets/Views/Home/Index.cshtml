@@ -2,9 +2,9 @@
     <div class="jumbotron">
         <h1 class="text-center">Show Me Da Tickets!</h1>
         <form role="form">
-            <div class="input-group">
+            <div class="form-group has-feedback input-group-lg">
                 <input type="text"
-                       class="text-center form-control input-lg"
+                       class="text-center form-control"
                        ng-model="query"
                        uib-typeahead="suggestion as suggestion.title for suggestion in getSuggestions($viewValue)"
                        typeahead-on-select="suggestionSelected($item)"
@@ -13,19 +13,20 @@
                        typeahead-loading="loading"
                        autocomplete="off"
                        placeholder="I'm looking for... (we'll search as you type)" />
-                <span class="input-group-addon">
-                    <span ng-class="{ 'glyphicon-refresh-animate': loading}" class="glyphicon glyphicon-refresh"></span>
-                </span>
+                <i ng-show="state === stateEnum.loadingSuggestion"
+                   class="glyphicon glyphicon-refresh glyphicon-refresh-animate form-control-feedback"></i>
             </div>
         </form>
     </div>
 
-    <div ng-cloak class="panel panel-default" ng-show="events.totalItems && !tickets.totalItems">
+    <div ng-cloak class="panel panel-default" ng-show="categoryId && !eventId">
 
         <div class="panel-heading">
             <h2>
                 Available events
-                <span class="badge">{{events.totalItems}}</span>
+                <i ng-show="state !== stateEnum.loadingEvents" class="badge">{{events.totalItems}}</i>
+                <i ng-show="state === stateEnum.loadingEvents"
+                   class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i>
             </h2>
         </div>
         <div class="panel-body">
@@ -36,10 +37,10 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th> <span class="glyphicon glyphicon-globe"></span> Country</th>
-                        <th> <span class="glyphicon glyphicon-home"></span> Venue</th>
-                        <th> <span class="glyphicon glyphicon-tag"></span> Minimum Ticket Price</th>
-                        <th> <span class="glyphicon glyphicon-time"></span> Starting Date</th>
+                        <th> <i class="glyphicon glyphicon-globe"></i> Country</th>
+                        <th> <i class="glyphicon glyphicon-home"></i> Venue</th>
+                        <th> <i class="glyphicon glyphicon-tag"></i> Minimum Ticket Price</th>
+                        <th> <i class="glyphicon glyphicon-time"></i> Starting Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,19 +67,21 @@
         </div>
     </div>
 
-    <div ng-cloak class="panel panel-default" ng-show="tickets.totalItems">
+    <div ng-cloak class="panel panel-default" ng-show="eventId">
 
         <div class="panel-heading">
             <h2>
                 Available tickets
-                <span class="badge">{{tickets.totalItems}}</span>
+                <i ng-show="state !== stateEnum.loadingTickets" class="badge">{{tickets.totalItems}}</i>
+                <i ng-show="state === stateEnum.loadingTickets"
+                   class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i>
             </h2>
         </div>
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-3">
-                    <button ng-click="tickets.totalItems = 0" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-menu-left"></span>
+                    <button ng-click="eventId = null" class="btn btn-primary">
+                        <i class="glyphicon glyphicon-menu-left"></i>
                         Back to events
                     </button>
                 </div>
