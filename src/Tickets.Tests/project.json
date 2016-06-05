@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0-*",
+
+  "testRunner": "mstest",
+
+  "dependencies": {
+    "Tickets": "*",
+    "GogoKit": "0.22.0",
+    "moq.netcore": "4.4.0-beta8",
+    "MSTest.TestFramework": "1.0.0-preview",
+    "dotnet-test-mstest": "1.0.1-preview"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8"
+      ],
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0-rc2-3002702"
+        },
+        "System.Diagnostics.TraceSource": "4.0.0-rc2-24027"
+      }
+    }
+  }
+}

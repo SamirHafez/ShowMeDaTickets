@@ -1,0 +1,136 @@
+﻿<div ng-controller="TicketViewModel">
+    <div class="jumbotron">
+        <h1 class="text-center">Show Me Da Tickets!</h1>
+        <form role="form">
+            <div class="input-group">
+                <input type="text"
+                       class="text-center form-control input-lg"
+                       ng-model="query"
+                       uib-typeahead="suggestion as suggestion.title for suggestion in getSuggestions($viewValue)"
+                       typeahead-on-select="suggestionSelected($item)"
+                       typeahead-wait-ms="300"
+                       typeahead-editable="false"
+                       typeahead-loading="loading"
+                       autocomplete="off"
+                       placeholder="I'm looking for... (we'll search as you type)" />
+                <span class="input-group-addon">
+                    <span ng-class="{ 'glyphicon-refresh-animate': loading}" class="glyphicon glyphicon-refresh"></span>
+                </span>
+            </div>
+        </form>
+    </div>
+
+    <div ng-cloak class="panel panel-default" ng-show="events.totalItems && !tickets.totalItems">
+
+        <div class="panel-heading">
+            <h2>
+                Available events
+                <span class="badge">{{events.totalItems}}</span>
+            </h2>
+        </div>
+        <div class="panel-body">
+            <p>Select an event to see its available listings.</p>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th> <span class="glyphicon glyphicon-globe"></span> Country</th>
+                        <th> <span class="glyphicon glyphicon-home"></span> Venue</th>
+                        <th> <span class="glyphicon glyphicon-tag"></span> Minimum Ticket Price</th>
+                        <th> <span class="glyphicon glyphicon-time"></span> Starting Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="event in events.items"
+                        ng-click="eventSelected(event)"
+                        ng-class="{ success: event.lowestPrice }"
+                        class="selectable">
+                        <td>{{event.venue.country}}</td>
+                        <td>{{event.venue.name}}</td>
+                        <td>{{event.minTicketPrice.display}}</td>
+                        <td>{{event.startDate | date}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center">
+            <uib-pagination total-items="events.totalItems"
+                            max-size="10"
+                            items-per-page="pageSize"
+                            boundary-link-numbers="true"
+                            ng-model="events.page"
+                            ng-change="loadEvents()">
+            </uib-pagination>
+        </div>
+    </div>
+
+    <div ng-cloak class="panel panel-default" ng-show="tickets.totalItems">
+
+        <div class="panel-heading">
+            <h2>
+                Available tickets
+                <span class="badge">{{tickets.totalItems}}</span>
+            </h2>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-3">
+                    <button ng-click="tickets.totalItems = 0" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-menu-left"></span>
+                        Back to events
+                    </button>
+                </div>
+
+                <div class="col-xs-4 col-xs-offset-5">
+                    <div class="input-group">
+                        <input type="text"
+                               ng-model="ticketNumberFilter"
+                               class="form-control"
+                               placeholder="Number of tickets...">
+                        <span class="input-group-btn">
+                            <button ng-click="loadTickets(ticketNumberFilter)"
+                                    class="btn btn-default"
+                                    type="button">
+                                Filter
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th># Tickets</th>
+                        <th>Total Ticket Price</th>
+                        <th>Booking Fee</th>
+                        <th>Section</th>
+                        <th>Total Charge</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="ticket in tickets.items">
+                        <td>{{ticket.numberOfTickets}}</td>
+                        <td>{{ticket.estimatedTotalTicketPrice}}</td>
+                        <td>{{ticket.estimatedBookingFee}}</td>
+                        <td>{{ticket.section}}</td>
+                        <td>{{ticket.estimatedTotalCharge}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center">
+            <uib-pagination total-items="tickets.totalItems"
+                            max-size="10"
+                            items-per-page="pageSize"
+                            boundary-link-numbers="true"
+                            ng-model="tickets.page"
+                            ng-change="loadTickets()">
+            </uib-pagination>
+        </div>
+    </div>
+</div>
